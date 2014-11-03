@@ -6,6 +6,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import javax.inject.Inject;
 
@@ -17,12 +18,12 @@ import flow.Flow;
 import mortar.Blueprint;
 import mortar.Mortar;
 
-public class CoreView extends DrawerLayout implements CanShowScreen<Blueprint>, CanShowDrawer<Blueprint> {
+public class CoreView extends FrameLayout implements CanShowScreen<Blueprint>/*, CanShowDrawer<Blueprint>*/ {
 
     @Inject CorePresenter.Presenter presenter;
 
     private final ScreenConductor<Blueprint> screenMaestro;
-    private       ActionBarDrawerToggle      drawerToggle;
+//    private       ActionBarDrawerToggle      drawerToggle;
 
     public CoreView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,7 +35,7 @@ public class CoreView extends DrawerLayout implements CanShowScreen<Blueprint>, 
     protected void onFinishInflate() {
         super.onFinishInflate();
         presenter.takeView(this);
-        initNavigationDrawer();
+//        initNavigationDrawer();
     }
 
 
@@ -53,41 +54,41 @@ public class CoreView extends DrawerLayout implements CanShowScreen<Blueprint>, 
         screenMaestro.showScreen(screen, oldScreen, direction);
     }
 
-    @Override public void showDrawer(Blueprint screen) {
-        screenMaestro.showDrawer(screen);
-    }
+//    @Override public void showDrawer(Blueprint screen) {
+//        screenMaestro.showDrawer(screen);
+//    }
 
-    public void initNavigationDrawer() {
-        drawerToggle = new ActionBarDrawerToggle(
-            (Activity) getContext(),
-            this,
-            R.drawable.ic_drawer,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        ) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
+//    public void initNavigationDrawer() {
+//        drawerToggle = new ActionBarDrawerToggle(
+//            (Activity) getContext(),
+//            this,
+//            R.drawable.ic_drawer,
+//            R.string.navigation_drawer_open,
+//            R.string.navigation_drawer_close
+//        ) {
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                super.onDrawerClosed(drawerView);
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+//            }
+//        };
+//
+//        post(new Runnable() {
+//            @Override
+//            public void run() {
+//                drawerToggle.syncState();
+//            }
+//        });
+//        setDrawerListener(drawerToggle);
+//
+//    }
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        post(new Runnable() {
-            @Override
-            public void run() {
-                drawerToggle.syncState();
-            }
-        });
-        setDrawerListener(drawerToggle);
-
-    }
-
-    public ActionBarDrawerToggle getDrawerToggle() {
-        return drawerToggle;
-    }
+//    public ActionBarDrawerToggle getDrawerToggle() {
+//        return drawerToggle;
+//    }
 
 }

@@ -9,8 +9,7 @@ import javax.inject.Singleton;
 import co.lemonlabs.mortar.example.U2020Module;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
 import co.lemonlabs.mortar.example.core.util.FlowOwner;
-import co.lemonlabs.mortar.example.ui.screens.DrawerScreen;
-import co.lemonlabs.mortar.example.ui.screens.GalleryScreen;
+import co.lemonlabs.mortar.example.ui.screens.EntryScreen;
 import dagger.Provides;
 import flow.Flow;
 import flow.Parcer;
@@ -30,11 +29,13 @@ public class CorePresenter implements Blueprint {
         this.scopeName = scopeName;
     }
 
-    @Override public String getMortarScopeName() {
+    @Override
+    public String getMortarScopeName() {
         return scopeName;
     }
 
-    @Override public Object getDaggerModule() {
+    @Override
+    public Object getDaggerModule() {
         return new Module();
     }
 
@@ -51,11 +52,14 @@ public class CorePresenter implements Blueprint {
 
         }
 
-        @Provides @MainScope Flow provideFlow(Presenter presenter) {
+        @Provides
+        @MainScope
+        Flow provideFlow(Presenter presenter) {
             return presenter.getFlow();
         }
 
-        @Provides Context providesContext(Application app) {
+        @Provides
+        Context providesContext(Application app) {
             return app;
         }
     }
@@ -63,21 +67,23 @@ public class CorePresenter implements Blueprint {
     // The core presenter extends FlowOwner which take care of the screen flows
     @Singleton
     public static class Presenter extends FlowOwner<Blueprint, CoreView> {
+
         private final ActionBarPresenter actionBarOwner;
 
-        @Inject Presenter(Parcer<Object> flowParcer, ActionBarPresenter actionBarOwner) {
+        @Inject
+        Presenter(Parcer<Object> flowParcer, ActionBarPresenter actionBarOwner) {
             super(flowParcer);
             this.actionBarOwner = actionBarOwner;
         }
 
         @Override
         protected Blueprint getFirstScreen() {
-            return new GalleryScreen();
+            return new EntryScreen();
         }
 
-        @Override protected Blueprint getDrawerScreen() {
-            return new DrawerScreen();
-        }
+//        @Override protected Blueprint getDrawerScreen() {
+//            return new DrawerScreen();
+//        }
 
     }
 }

@@ -3,9 +3,7 @@ package co.lemonlabs.mortar.example.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import co.lemonlabs.mortar.example.U2020App;
 import co.lemonlabs.mortar.example.core.CorePresenter;
 import co.lemonlabs.mortar.example.core.CoreView;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
-import co.lemonlabs.mortar.example.core.android.DrawerPresenter;
 import flow.Flow;
 import mortar.Mortar;
 import mortar.MortarActivityScope;
@@ -30,21 +27,20 @@ import mortar.MortarScope;
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 
-public class MainActivity extends Activity implements ActionBarPresenter.View, DrawerPresenter.View {
+public class MainActivity extends Activity implements ActionBarPresenter.View/*, DrawerPresenter.View*/ {
 
     @Inject
     ActionBarPresenter actionBarPresenter;
-    @Inject
-    DrawerPresenter drawerPresenter;
+//    @Inject
+//    DrawerPresenter drawerPresenter;
     @Inject
     AppContainer appContainer;
 
     private List<ActionBarPresenter.MenuAction> actionBarMenuActions;
-//    private MenuItem menuItem;
     private MortarActivityScope activityScope;
     private CoreView coreView;
     private Flow flow;
-    private ActionBarDrawerToggle drawerToggle;
+//    private ActionBarDrawerToggle drawerToggle;
 
     private boolean configurationChangeIncoming;
     private String scopeName;
@@ -69,12 +65,12 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         ViewGroup container = appContainer.get(this, U2020App.get(this)); // (Activity, Application)
 
         getLayoutInflater().inflate(R.layout.core, container);
-        coreView = ButterKnife.findById(this, R.id.drawer_layout);
+        coreView = ButterKnife.findById(this, R.id.core_layout);
 
         flow = coreView.getFlow();
 
-        drawerToggle = coreView.getDrawerToggle();
-        drawerPresenter.takeView(this);
+//        drawerToggle = coreView.getDrawerToggle();
+//        drawerPresenter.takeView(this);
     }
 
     @Override
@@ -95,7 +91,7 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
     protected void onDestroy() {
         super.onDestroy();
         if (actionBarPresenter != null) actionBarPresenter.dropView(this);
-        if (drawerPresenter != null) drawerPresenter.dropView(this);
+//        if (drawerPresenter != null) drawerPresenter.dropView(this);
         if (!configurationChangeIncoming) {
             if (!activityScope.isDestroyed()) {
                 MortarScope parentScope = Mortar.getScope(getApplication());
@@ -134,27 +130,15 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
                 }
 
             }
-//            menuItem = menu.add(actionBarMenuActions.title)
-//                .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
-//                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem menuItem) {
-//                        actionBarMenuActions.action.call();
-//                        return true;
-//                    }
-//                });
         }
-//        else if (menu.hasVisibleItems() && menuItem != null) {
-//            menu.removeItem(menuItem.getItemId());
-//        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+//        if (drawerToggle.onOptionsItemSelected(item)) {
+//            return true;
+//        }
         if (item.getItemId() == android.R.id.home) {
             return flow.goBack();
         }
@@ -178,11 +162,11 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
     // ActionBarDrawerToggle:This class provides a handy way to tie together the functionality of
     // DrawerLayout and the framework ActionBar to implement the recommended design for navigation drawers.
     // This shall be put in onConfigurationChanged
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        drawerToggle.onConfigurationChanged(newConfig);
+//    }
 
     // Implements DrawerPresenter.View's methods
     @Override
@@ -192,15 +176,15 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
 
     // If true, home icon shows the drawer.
     // If false, home icon goes up.
-    @Override
-    public void setDrawerIndicatorEnabled(boolean enabled) {
-        drawerToggle.setDrawerIndicatorEnabled(enabled);
-    }
+//    @Override
+//    public void setDrawerIndicatorEnabled(boolean enabled) {
+//        drawerToggle.setDrawerIndicatorEnabled(enabled);
+//    }
 
-    @Override
-    public void setDrawerLockMode(int lockMode) {
-        coreView.setDrawerLockMode(lockMode);
-    }
+//    @Override
+//    public void setDrawerLockMode(int lockMode) {
+//        coreView.setDrawerLockMode(lockMode);
+//    }
 
     // Implements ActionBarPresenter.View's methods
     @Override
@@ -224,11 +208,11 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         }
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
-    }
+//    @Override
+//    protected void onPostCreate(Bundle savedInstanceState) {
+//        super.onPostCreate(savedInstanceState);
+//        drawerToggle.syncState();
+//    }
 
     private boolean isWrongInstance() {
         if (!isTaskRoot()) {
