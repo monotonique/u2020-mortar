@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -106,9 +108,10 @@ public class StubXScreen extends TransitionScreen {
             this.actionBar = actionBar;
             this.drawer = drawer;
             this.hasDrawer = hasDrawer;
+            // PopupPresenter is in Mortar, like ViewPresenter
             this.examplePopupPresenter = new PopupPresenter<ExamplePopupData, Boolean>() {
                 @Override protected void onPopupResult(Boolean confirmed) {
-                    Presenter.this.getView().showToast(confirmed ? "Just did that!" : "If you say so...");
+                    Presenter.this.getView().showToast(confirmed ? "^^" : "QQ");
                 }
             };
         }
@@ -118,16 +121,35 @@ public class StubXScreen extends TransitionScreen {
             super.onLoad(savedInstanceState);
             if (getView() == null) return;
 
+            List<ActionBarPresenter.MenuAction> actions = new ArrayList<>();
+            actions.add(new ActionBarPresenter.MenuAction("Alert", R.drawable.refresh, new Action0() {
+                @Override public void call() {
+                    examplePopupPresenter.show(new ExamplePopupData("YO!", "This is an example of a Popup Presenter"));
+                }
+            }));
+            actions.add(new ActionBarPresenter.MenuAction("AlertYOo", new Action0() {
+                @Override public void call() {
+                    examplePopupPresenter.show(new ExamplePopupData("YOo!", "This is an example of a Popup Presenter"));
+                }
+            }));
+
             actionBar.setConfig(new ActionBarPresenter.Config(
-                true,
-                true,
-                hasDrawer ? "Stub with drawer" : "Stub",
-                new ActionBarPresenter.MenuAction("Alert", new Action0() {
-                    @Override public void call() {
-                        examplePopupPresenter.show(new ExamplePopupData("This is an example of a Popup Presenter"));
-                    }
-                })
+                    true,
+                    true,
+                    hasDrawer ? "Stub with drawer" : "Stub",
+                    actions
             ));
+
+//            actionBar.setConfig(new ActionBarPresenter.Config(
+//                true,
+//                true,
+//                hasDrawer ? "Stub with drawer" : "Stub",
+//                new ActionBarPresenter.MenuAction("Alert", new Action0() {
+//                    @Override public void call() {
+//                        examplePopupPresenter.show(new ExamplePopupData("YO!", "This is an example of a Popup Presenter"));
+//                    }
+//                })
+//            ));
 
             if (!hasDrawer) {
                 drawer.setConfig(new DrawerPresenter.Config(false, DrawerLayout.LOCK_MODE_LOCKED_CLOSED));
@@ -148,6 +170,7 @@ public class StubXScreen extends TransitionScreen {
 
         public void goToAnotherStub() {
             if (!transitioning.getAndSet(true)) {
+                // why do we need to random a number for the position?
                 flow.goTo(new StubYScreen(false, new Random().nextInt(420)));
             }
         }

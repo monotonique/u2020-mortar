@@ -17,6 +17,8 @@ package co.lemonlabs.mortar.example.core.android;
 
 import android.os.Bundle;
 
+import java.util.List;
+
 import mortar.MortarScope;
 import mortar.Presenter;
 import rx.functions.Action0;
@@ -30,34 +32,42 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.View> {
         void setShowHomeEnabled(boolean enabled);
         void setUpButtonEnabled(boolean enabled);
         void setTitle(CharSequence title);
-        void setMenu(MenuAction action);
+//        void setMenu(MenuAction action);
+        void setMenu(List<MenuAction> actions);
     }
 
     public static class Config {
         public final boolean      showHomeEnabled;
         public final boolean      upButtonEnabled;
         public final CharSequence title;
-        public final MenuAction   action;
+//        public final MenuAction   action;
+        public final List<MenuAction> actions;
 
         public Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,
-                      MenuAction action) {
+                      List<MenuAction> actions) {
             this.showHomeEnabled = showHomeEnabled;
             this.upButtonEnabled = upButtonEnabled;
             this.title = title;
-            this.action = action;
+            this.actions = actions;
         }
 
-        public Config withAction(MenuAction action) {
-            return new Config(showHomeEnabled, upButtonEnabled, title, action);
+        public Config withAction(List<MenuAction> actions) {
+            return new Config(showHomeEnabled, upButtonEnabled, title, actions);
         }
     }
 
     public static class MenuAction {
         public final CharSequence title;
+        public final int icon;
         public final Action0      action;
 
         public MenuAction(CharSequence title, Action0 action) {
+            this(title, -1, action);
+        }
+
+        public MenuAction(CharSequence title, int icon, Action0 action) {
             this.title = title;
+            this.icon = icon;
             this.action = action;
         }
     }
@@ -93,6 +103,6 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.View> {
         view.setShowHomeEnabled(config.showHomeEnabled);
         view.setUpButtonEnabled(config.upButtonEnabled);
         view.setTitle(config.title);
-        view.setMenu(config.action);
+        view.setMenu(config.actions);
     }
 }

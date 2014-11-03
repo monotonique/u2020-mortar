@@ -45,7 +45,7 @@ public class CoreView extends DrawerLayout implements CanShowScreen<Blueprint>, 
     }
 
     public Flow getFlow() {
-        return presenter.getFlow();
+        return presenter.getFlow(); // CorePresenter.Presenter extends FlowOwner
     }
 
     @Override

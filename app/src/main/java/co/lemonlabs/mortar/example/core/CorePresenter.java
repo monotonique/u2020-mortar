@@ -60,6 +60,7 @@ public class CorePresenter implements Blueprint {
         }
     }
 
+    // The core presenter extends FlowOwner which take care of the screen flows
     @Singleton
     public static class Presenter extends FlowOwner<Blueprint, CoreView> {
         private final ActionBarPresenter actionBarOwner;

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -28,25 +29,28 @@ import mortar.MortarScope;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
-import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
 public class MainActivity extends Activity implements ActionBarPresenter.View, DrawerPresenter.View {
 
-    @Inject ActionBarPresenter actionBarPresenter;
-    @Inject DrawerPresenter    drawerPresenter;
-    @Inject AppContainer       appContainer;
+    @Inject
+    ActionBarPresenter actionBarPresenter;
+    @Inject
+    DrawerPresenter drawerPresenter;
+    @Inject
+    AppContainer appContainer;
 
-    private ActionBarPresenter.MenuAction actionBarMenuAction;
-    private MenuItem                      menuItem;
-    private MortarActivityScope           activityScope;
-    private CoreView                      coreView;
-    private Flow                          flow;
-    private ActionBarDrawerToggle         drawerToggle;
+    private List<ActionBarPresenter.MenuAction> actionBarMenuActions;
+//    private MenuItem menuItem;
+    private MortarActivityScope activityScope;
+    private CoreView coreView;
+    private Flow flow;
+    private ActionBarDrawerToggle drawerToggle;
 
     private boolean configurationChangeIncoming;
-    private String  scopeName;
+    private String scopeName;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (isWrongInstance()) {
@@ -62,7 +66,7 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
 
         actionBarPresenter.takeView(this);
 
-        ViewGroup container = appContainer.get(this, U2020App.get(this));
+        ViewGroup container = appContainer.get(this, U2020App.get(this)); // (Activity, Application)
 
         getLayoutInflater().inflate(R.layout.core, container);
         coreView = ButterKnife.findById(this, R.id.drawer_layout);
@@ -81,12 +85,14 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         return super.getSystemService(name);
     }
 
-    @Override public Object onRetainNonConfigurationInstance() {
+    @Override
+    public Object onRetainNonConfigurationInstance() {
         configurationChangeIncoming = true;
         return activityScope.getName();
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         if (actionBarPresenter != null) actionBarPresenter.dropView(this);
         if (drawerPresenter != null) drawerPresenter.dropView(this);
@@ -109,19 +115,38 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (actionBarMenuAction != null) {
-            menuItem = menu.add(actionBarMenuAction.title)
-                .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
-                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        actionBarMenuAction.action.call();
-                        return true;
-                    }
-                });
-        } else if (menu.hasVisibleItems() && menuItem != null) {
-            menu.removeItem(menuItem.getItemId());
+        if (actionBarMenuActions != null) {
+            for (final ActionBarPresenter.MenuAction actionBarMenuAction : actionBarMenuActions) {
+                MenuItem menuItem = menu.add(actionBarMenuAction.title)
+                        .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                actionBarMenuAction.action.call();
+                                return true;
+                            }
+                        });
+                if (actionBarMenuAction.icon >= 0) {
+                    menuItem.setIcon(actionBarMenuAction.icon)
+                            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+                } else {
+                    menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                }
+
+            }
+//            menuItem = menu.add(actionBarMenuActions.title)
+//                .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
+//                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem menuItem) {
+//                        actionBarMenuActions.action.call();
+//                        return true;
+//                    }
+//                });
         }
+//        else if (menu.hasVisibleItems() && menuItem != null) {
+//            menu.removeItem(menuItem.getItemId());
+//        }
         return true;
     }
 
@@ -136,7 +161,8 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         return super.onOptionsItemSelected(item);
     }
 
-    @Override protected void onSaveInstanceState(Bundle outState) {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         activityScope.onSaveInstanceState(outState);
     }
@@ -149,17 +175,23 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         super.onBackPressed();
     }
 
+    // ActionBarDrawerToggle:This class provides a handy way to tie together the functionality of
+    // DrawerLayout and the framework ActionBar to implement the recommended design for navigation drawers.
+    // This shall be put in onConfigurationChanged
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
+    // Implements DrawerPresenter.View's methods
     @Override
     public MortarScope getMortarScope() {
         return activityScope;
     }
 
+    // If true, home icon shows the drawer.
+    // If false, home icon goes up.
     @Override
     public void setDrawerIndicatorEnabled(boolean enabled) {
         drawerToggle.setDrawerIndicatorEnabled(enabled);
@@ -170,6 +202,7 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
         coreView.setDrawerLockMode(lockMode);
     }
 
+    // Implements ActionBarPresenter.View's methods
     @Override
     public void setShowHomeEnabled(boolean enabled) {
         ActionBar actionBar = getActionBar();
@@ -184,9 +217,9 @@ public class MainActivity extends Activity implements ActionBarPresenter.View, D
     }
 
     @Override
-    public void setMenu(ActionBarPresenter.MenuAction action) {
-        if (action != actionBarMenuAction) {
-            actionBarMenuAction = action;
+    public void setMenu(List<ActionBarPresenter.MenuAction> actions) {
+        if (actions != null && !actions.equals(actionBarMenuActions)) {
+            actionBarMenuActions = actions;
             invalidateOptionsMenu();
         }
     }

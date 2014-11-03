@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -101,18 +103,35 @@ public class ViewStateScreen extends TransitionScreen {
             this.drawer = drawer;
         }
 
+
         @Override
         public void onLoad(Bundle savedInstanceState) {
+
+            List<ActionBarPresenter.MenuAction> actions = new ArrayList<>();
+            actions.add(new ActionBarPresenter.MenuAction("Go Away", new Action0() {
+                @Override
+                public void call() {
+                    flow.goTo(new ViewStateScreen(new Random().nextInt(MAX_VALUE)));
+                }
+            }));
+
             actionBar.setConfig(new ActionBarPresenter.Config(
                 true,
                 true,
                 "View State Parcer  Example",
-                new ActionBarPresenter.MenuAction("Go away", new Action0() {
-                    @Override public void call() {
-                        flow.goTo(new ViewStateScreen(new Random().nextInt(MAX_VALUE)));
-                    }
-                })
-            ));
+                actions));
+
+
+//            actionBar.setConfig(new ActionBarPresenter.Config(
+//                true,
+//                true,
+//                "View State Parcer  Example",
+//                new ActionBarPresenter.MenuAction("Go away", new Action0() {
+//                    @Override public void call() {
+//                        flow.goTo(new ViewStateScreen(new Random().nextInt(MAX_VALUE)));
+//                    }
+//                })
+//            ));
 
             drawer.setConfig(new DrawerPresenter.Config(true, DrawerLayout.LOCK_MODE_UNLOCKED));
             restoreViewState();

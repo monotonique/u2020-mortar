@@ -49,6 +49,7 @@ public class U2020App extends Application {
         Timber.i("Global object graph creation took %sms", diff);
     }
 
+    // Used in DebugAppContainer#setEndpointAndRelaunch
     public void rebuildOjectGraphAndInject() {
         Mortar.destroyRootScope(applicationScope);
         buildObjectGraphAndInject();

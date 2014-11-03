@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.support.v4.widget.DrawerLayout;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -117,16 +119,12 @@ public class StubYScreen extends TransitionScreen {
             super.onLoad(savedInstanceState);
             if (getView() == null) return;
 
-            actionBar.setConfig(new ActionBarPresenter.Config(
-                true,
-                true,
-                hasDrawer ? "Stub with drawer" : "Stub",
-                new ActionBarPresenter.MenuAction("Alert", new Action0() {
-                    @Override public void call() {
-                        examplePopupPresenter.show(new ExamplePopupData("This is an example of a Popup Presenter"));
-                    }
-                })
-            ));
+            List<ActionBarPresenter.MenuAction> actions = new ArrayList<>();
+            actions.add(new ActionBarPresenter.MenuAction("Alert", new Action0() {
+                @Override public void call() {
+                    examplePopupPresenter.show(new ExamplePopupData("YOYO!", "This is an example of a Popup Presenter"));
+                }
+            }));
 
             if (!hasDrawer) {
                 drawer.setConfig(new DrawerPresenter.Config(false, DrawerLayout.LOCK_MODE_LOCKED_CLOSED));
@@ -134,7 +132,7 @@ public class StubYScreen extends TransitionScreen {
                 drawer.setConfig(new DrawerPresenter.Config(true, DrawerLayout.LOCK_MODE_UNLOCKED));
             }
 
-            getView().setStubText(R.string.stub_go_right);
+            getView().setStubText(R.string.stub_go_left);
 
             examplePopupPresenter.takeView(getView().getExamplePopup());
         }

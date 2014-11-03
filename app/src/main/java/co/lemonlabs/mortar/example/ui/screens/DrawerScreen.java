@@ -12,6 +12,7 @@ import flow.Flow;
 import flow.Layout;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
+import timber.log.Timber;
 
 @Layout(R.layout.drawer)
 public class DrawerScreen implements Blueprint {
@@ -40,6 +41,7 @@ public class DrawerScreen implements Blueprint {
 
         private final Flow flow;
 
+        // The argument flow is injected from CorePresenter
         @Inject Presenter(Flow flow) {
             this.flow = flow;
         }
@@ -54,15 +56,19 @@ public class DrawerScreen implements Blueprint {
         public void goToScreenAtPosition(int position) {
             switch (position) {
                 case 0:
+                    Timber.d("position" + position + "is clicked");
                     flow.replaceTo(new GalleryScreen());
                     break;
                 case 1:
+                    Timber.d("position" + position + "is clicked");
                     flow.replaceTo(new NestedScreen());
                     break;
                 case 2:
-                    flow.replaceTo(new StubXScreen(true, position - 1));
+                    Timber.d("position" + position + "is clicked");
+                    flow.replaceTo(new StubXScreen(true, position - 1)); // StubXScreen(true, 1)
                     break;
                 case 3:
+                    Timber.d("position" + position + "is clicked");
                     flow.replaceTo(new ViewStateScreen(1));
                     break;
             }

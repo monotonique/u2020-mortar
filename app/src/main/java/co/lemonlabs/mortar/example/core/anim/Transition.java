@@ -11,7 +11,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <ol>
  * <li> View to be added</li>
  * <li> View to be removed</li>
- * <li>  View to be restored when popping the backstack</li>
+ * <li> View to be restored when popping the backstack</li>
  * <li> View to be popped from the backstack</li>
  * </ol>
  *

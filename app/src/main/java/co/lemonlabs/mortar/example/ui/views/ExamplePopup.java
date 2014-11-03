@@ -20,8 +20,8 @@ public class ExamplePopup implements Popup<ExamplePopupData, Boolean> {
 
     @Override
     public void show(ExamplePopupData info, boolean withFlourish, final PopupPresenter<ExamplePopupData, Boolean> presenter) {
-        dialog = new AlertDialog.Builder(context).setTitle("Example")
-            .setMessage(info.content)
+        dialog = new AlertDialog.Builder(context).setTitle(info.title)
+            .setMessage(info.content) // info.content is a String
             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override public void onClick(DialogInterface d, int which) {
                     dialog = null;
@@ -49,7 +49,7 @@ public class ExamplePopup implements Popup<ExamplePopupData, Boolean> {
 
     @Override public void dismiss(boolean withFlourish) {
         dialog.dismiss();
-        dialog = null;
+        dialog = null; // Release for GC
     }
 
     @Override public Context getContext() {
