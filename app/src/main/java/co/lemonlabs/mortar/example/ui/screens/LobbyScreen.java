@@ -1,7 +1,6 @@
 package co.lemonlabs.mortar.example.ui.screens;
 
 import android.os.Bundle;
-import android.view.ViewTreeObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,20 +13,22 @@ import co.lemonlabs.mortar.example.core.CorePresenter;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
 import co.lemonlabs.mortar.example.core.anim.Transition;
 import co.lemonlabs.mortar.example.core.anim.Transitions;
-import co.lemonlabs.mortar.example.ui.views.EntryView;
+import co.lemonlabs.mortar.example.ui.views.LobbyView;
 import flow.Flow;
 import flow.Layout;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import rx.functions.Action0;
-import timber.log.Timber;
 
 /**
- * Created by george on 2014/11/3.
+ * Created by george on 2014/11/4.
  */
-@Layout(R.layout.entry)
+@Layout(R.layout.lobby)
 @Transition({Transitions.NONE, Transitions.NONE, Transitions.NONE, Transitions.NONE})
-public class EntryScreen implements Blueprint {
+public class LobbyScreen implements Blueprint {
+
+    public LobbyScreen() {
+    }
 
     @Override
     public String getMortarScopeName() {
@@ -40,7 +41,7 @@ public class EntryScreen implements Blueprint {
     }
 
     @dagger.Module(
-        injects = { EntryView.class},
+        injects = LobbyView.class,
         addsTo = CorePresenter.Module.class,
         library = true
     )
@@ -51,12 +52,10 @@ public class EntryScreen implements Blueprint {
     }
 
     @Singleton
-    public static class Presenter extends ViewPresenter<EntryView> {
+    public static class Presenter extends ViewPresenter<LobbyView> {
 
         private final Flow mFlow;
         private final ActionBarPresenter mActionBarPresenter;
-
-        private ViewTreeObserver vto;
 
         @Inject
         Presenter(Flow flow, ActionBarPresenter actionBarPresenter) {
@@ -64,32 +63,42 @@ public class EntryScreen implements Blueprint {
             mActionBarPresenter = actionBarPresenter;
         }
 
-
         @Override
         protected void onLoad(Bundle savedInstanceState) {
-            Timber.d("onLoad");
             super.onLoad(savedInstanceState);
 
-            // Add MenuActions to Action Bar
+            if (getView() == null) {
+                return;
+            }
+
             List<ActionBarPresenter.MenuAction> actions = new ArrayList<>();
-            actions.add(new ActionBarPresenter.MenuAction("YOLO", new Action0() {
+            actions.add(new ActionBarPresenter.MenuAction("NEVER", new Action0() {
                 @Override
                 public void call() {
-                    if (getView() != null) {
-                        getView().showToast("You only live once!");
-                    }
+
+                }
+            }));
+            actions.add(new ActionBarPresenter.MenuAction("GIVE", new Action0() {
+                @Override
+                public void call() {
+
+                }
+            }));
+            actions.add(new ActionBarPresenter.MenuAction("UP", new Action0() {
+                @Override
+                public void call() {
+
                 }
             }));
             mActionBarPresenter.setConfig(new ActionBarPresenter.Config(
                 true,
-                false,
-                "Entry",
-                actions
-            ));
+                true,
+                "Lobby",
+                actions));
         }
 
-        public void goToLobby() {
-            mFlow.goTo(new LobbyScreen());
+        public void backToEntry() {
+            mFlow.goBack();
         }
     }
 }

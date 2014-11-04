@@ -12,6 +12,7 @@ import butterknife.InjectView;
 import co.lemonlabs.mortar.example.R;
 import co.lemonlabs.mortar.example.ui.screens.NestedScreen;
 import mortar.Mortar;
+import timber.log.Timber;
 
 public class NestedView extends FrameLayout {
 

@@ -16,4 +16,13 @@ public class AndroidModule {
     DrawerPresenter provideDrawerPresenter() {
         return new DrawerPresenter();
     }
+
+    @Provides @Singleton ActivityPresenter provideActivityOwner() {
+        return new ActivityPresenter();
+    }
+
+//    @Provides @Singleton ActivityPresenter provideActivityPresenter() {
+//        return new ActivityPresenter();
+//    }
+
 }

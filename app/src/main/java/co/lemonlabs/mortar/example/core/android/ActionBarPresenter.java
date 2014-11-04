@@ -32,7 +32,6 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.View> {
         void setShowHomeEnabled(boolean enabled);
         void setUpButtonEnabled(boolean enabled);
         void setTitle(CharSequence title);
-//        void setMenu(MenuAction action);
         void setMenu(List<MenuAction> actions);
     }
 
@@ -40,7 +39,6 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.View> {
         public final boolean      showHomeEnabled;
         public final boolean      upButtonEnabled;
         public final CharSequence title;
-//        public final MenuAction   action;
         public final List<MenuAction> actions;
 
         public Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,

@@ -2,8 +2,10 @@ package co.lemonlabs.mortar.example.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import co.lemonlabs.mortar.example.U2020App;
 import co.lemonlabs.mortar.example.core.CorePresenter;
 import co.lemonlabs.mortar.example.core.CoreView;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
+import co.lemonlabs.mortar.example.core.android.ActivityPresenter;
 import flow.Flow;
 import mortar.Mortar;
 import mortar.MortarActivityScope;
@@ -27,14 +30,14 @@ import mortar.MortarScope;
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 
-public class MainActivity extends Activity implements ActionBarPresenter.View/*, DrawerPresenter.View*/ {
+public class MainActivity extends FragmentActivity implements ActionBarPresenter.View, ActivityPresenter.View/*, DrawerPresenter.View*/ {
 
-    @Inject
-    ActionBarPresenter actionBarPresenter;
+    @Inject ActionBarPresenter actionBarPresenter;
+
+    @Inject ActivityPresenter mActivity;
 //    @Inject
 //    DrawerPresenter drawerPresenter;
-    @Inject
-    AppContainer appContainer;
+    @Inject AppContainer appContainer;
 
     private List<ActionBarPresenter.MenuAction> actionBarMenuActions;
     private MortarActivityScope activityScope;
@@ -42,7 +45,7 @@ public class MainActivity extends Activity implements ActionBarPresenter.View/*,
     private Flow flow;
 //    private ActionBarDrawerToggle drawerToggle;
 
-    private boolean configurationChangeIncoming;
+//    private boolean configurationChangeIncoming;
     private String scopeName;
 
     @Override
@@ -61,6 +64,8 @@ public class MainActivity extends Activity implements ActionBarPresenter.View/*,
         Mortar.inject(this, this);
 
         actionBarPresenter.takeView(this);
+
+        mActivity.takeView(this);
 
         ViewGroup container = appContainer.get(this, U2020App.get(this)); // (Activity, Application)
 
@@ -81,24 +86,25 @@ public class MainActivity extends Activity implements ActionBarPresenter.View/*,
         return super.getSystemService(name);
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        configurationChangeIncoming = true;
-        return activityScope.getName();
-    }
+//    @Override
+//    public Object onRetainNonConfigurationInstance() {
+//        configurationChangeIncoming = true;
+//        return activityScope.getName();
+//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (actionBarPresenter != null) actionBarPresenter.dropView(this);
+        if (mActivity != null) mActivity.dropView(this);
 //        if (drawerPresenter != null) drawerPresenter.dropView(this);
-        if (!configurationChangeIncoming) {
-            if (!activityScope.isDestroyed()) {
-                MortarScope parentScope = Mortar.getScope(getApplication());
-                parentScope.destroyChild(activityScope);
-            }
-            activityScope = null;
-        }
+//        if (!configurationChangeIncoming) {
+//            if (!activityScope.isDestroyed()) {
+//                MortarScope parentScope = Mortar.getScope(getApplication());
+//                parentScope.destroyChild(activityScope);
+//            }
+//            activityScope = null;
+//        }
     }
 
     private String getScopeName() {
@@ -223,4 +229,14 @@ public class MainActivity extends Activity implements ActionBarPresenter.View/*,
         return false;
     }
 
+    // Implementation of ActivityPresenter.View
+    @Override
+    public void finishCurrentActivity() {
+        finish();
+    }
+
+    @Override
+    public Context getMortarContext() {
+        return this;
+    }
 }

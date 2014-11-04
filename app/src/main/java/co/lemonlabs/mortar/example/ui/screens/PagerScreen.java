@@ -1,7 +1,6 @@
 package co.lemonlabs.mortar.example.ui.screens;
 
 import android.os.Bundle;
-import android.view.ViewTreeObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,20 +13,19 @@ import co.lemonlabs.mortar.example.core.CorePresenter;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
 import co.lemonlabs.mortar.example.core.anim.Transition;
 import co.lemonlabs.mortar.example.core.anim.Transitions;
-import co.lemonlabs.mortar.example.ui.views.EntryView;
+import co.lemonlabs.mortar.example.ui.views.PagerView;
 import flow.Flow;
 import flow.Layout;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import rx.functions.Action0;
-import timber.log.Timber;
 
 /**
  * Created by george on 2014/11/3.
  */
-@Layout(R.layout.entry)
+@Layout(R.layout.pager)
 @Transition({Transitions.NONE, Transitions.NONE, Transitions.NONE, Transitions.NONE})
-public class EntryScreen implements Blueprint {
+public class PagerScreen implements Blueprint {
 
     @Override
     public String getMortarScopeName() {
@@ -40,7 +38,7 @@ public class EntryScreen implements Blueprint {
     }
 
     @dagger.Module(
-        injects = { EntryView.class},
+        injects = PagerView.class,
         addsTo = CorePresenter.Module.class,
         library = true
     )
@@ -51,12 +49,10 @@ public class EntryScreen implements Blueprint {
     }
 
     @Singleton
-    public static class Presenter extends ViewPresenter<EntryView> {
+    public static class Presenter extends ViewPresenter<PagerView> {
 
         private final Flow mFlow;
         private final ActionBarPresenter mActionBarPresenter;
-
-        private ViewTreeObserver vto;
 
         @Inject
         Presenter(Flow flow, ActionBarPresenter actionBarPresenter) {
@@ -64,11 +60,13 @@ public class EntryScreen implements Blueprint {
             mActionBarPresenter = actionBarPresenter;
         }
 
-
         @Override
         protected void onLoad(Bundle savedInstanceState) {
-            Timber.d("onLoad");
             super.onLoad(savedInstanceState);
+
+            if (getView() == null) {
+                return;
+            }
 
             // Add MenuActions to Action Bar
             List<ActionBarPresenter.MenuAction> actions = new ArrayList<>();
@@ -76,20 +74,15 @@ public class EntryScreen implements Blueprint {
                 @Override
                 public void call() {
                     if (getView() != null) {
-                        getView().showToast("You only live once!");
                     }
                 }
             }));
             mActionBarPresenter.setConfig(new ActionBarPresenter.Config(
                 true,
                 false,
-                "Entry",
+                "Pager",
                 actions
             ));
-        }
-
-        public void goToLobby() {
-            mFlow.goTo(new LobbyScreen());
         }
     }
 }

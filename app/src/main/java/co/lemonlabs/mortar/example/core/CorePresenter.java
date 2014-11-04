@@ -10,6 +10,7 @@ import co.lemonlabs.mortar.example.U2020Module;
 import co.lemonlabs.mortar.example.core.android.ActionBarPresenter;
 import co.lemonlabs.mortar.example.core.util.FlowOwner;
 import co.lemonlabs.mortar.example.ui.screens.EntryScreen;
+import co.lemonlabs.mortar.example.ui.screens.PagerScreen;
 import dagger.Provides;
 import flow.Flow;
 import flow.Parcer;
@@ -78,7 +79,7 @@ public class CorePresenter implements Blueprint {
 
         @Override
         protected Blueprint getFirstScreen() {
-            return new EntryScreen();
+            return new PagerScreen();
         }
 
 //        @Override protected Blueprint getDrawerScreen() {

@@ -48,6 +48,7 @@ public class NestedScreen implements Blueprint {
     public static class Module {
 
         public Module() {}
+
     }
 
     @Singleton
@@ -77,26 +78,12 @@ public class NestedScreen implements Blueprint {
                 }
             }));
             actionBar.setConfig(new ActionBarPresenter.Config(
-                    true,
-                    true,
-                    "Nested Presenters",
-                    actions
+                true,
+                true,
+                "Nested Presenters",
+                actions
             ));
             drawer.setConfig(new DrawerPresenter.Config(true, DrawerLayout.LOCK_MODE_UNLOCKED));
-
-
-//            actionBar.setConfig(new ActionBarPresenter.Config(
-//                true,
-//                true,
-//                "Nested Presenters",
-//                new ("Animate", new Action0() {
-//                    @Override public void call() {
-//                        if (getView() != null) {
-//                            toggleChildAnimation();
-//                        }
-//                    }
-//                })
-//            ));
         }
 
         public void toggleChildAnimation() {
